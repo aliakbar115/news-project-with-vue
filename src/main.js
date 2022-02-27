@@ -7,15 +7,16 @@ import App from './App.vue'
 import Vuelidate from 'vuelidate'
 import axios from 'axios'
 import VueAxios from 'vue-axios';
+import vueSimpleAlert from "vue-simple-alert";  // آلرت در ویو
 
 Vue.use(VueRouter);   // for plagin
 Vue.use(VueCookie);
 Vue.use(Vuelidate);
 Vue.use(VueAxios,axios);
+Vue.use(vueSimpleAlert);
 
 axios.defaults.baseURL='http://localhost:8000/api/'
 
-// Vue.http.options.root = "http://localhost:8000/api/";
 // Vue.http.interceptors.push((request, next) => { // use JWT   برای لاگین
 //   request.headers.set('Authorization', 'Bearer ' + Vue.cookie.get('news_auth_token'));  // set in header Request for all
 //   next();

@@ -4,7 +4,7 @@
       <li class="breadcrumb-item">
         <router-link to="/admin"> خانه </router-link>
       </li>
-      <li class="breadcrumb-item active">لیست کاربران</li>
+      <li class="breadcrumb-item active">لیست دسته ها</li>
     </ol>
     <section class="content mt-5">
       <div class="container-fluid">
@@ -12,7 +12,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">کاربران</h3>
+                <h3 class="card-title">دسته بندی ها</h3>
 
                 <div class="card-tools d-flex">
                   <!-- search -->
@@ -26,7 +26,7 @@
                         name="search"
                         value=""
                         class="form-control float-right"
-                        placeholder="search in name & email"
+                        placeholder="search in name"
                         v-model="searchQuery"
                         @input="onInput"
                       />
@@ -38,21 +38,14 @@
                     </div>
                   </form>
 
-                  <!-- ایجاد کاربر  -->
+                  <!-- ایجاد دسته  -->
                   <div class="input-group-sm mr-2">
                     <router-link
-                      to="/admin/users/create"
+                      to="/admin/categories/create"
                       class="btn btn-sm btn-info"
                     >
-                      ایجاد کاربر
+                      ایجاد دسته
                     </router-link>
-
-                    <!-- <a href="" class="btn btn-sm btn-warning">
-                      کاربران مدیر
-                    </a>
-                    <a href="" class="btn btn-sm btn-secondary">
-                      همه کاربران
-                    </a> -->
                   </div>
                 </div>
               </div>
@@ -61,30 +54,27 @@
                 <table class="table table-hover">
                   <tbody>
                     <tr>
-                      <th>آیدی کاربر</th>
-                      <th>نام کاربر</th>
-                      <th>ایمیل</th>
-                      <th>وضعیت ایمیل کاربر</th>
+                      <th>آیدی دسته</th>
+                      <th>نام دسته</th>
+                      <th>نام انگلیسی</th>
+                      <th>نام والد</th>
                       <th>اقدامات</th>
                     </tr>
-                    <tr v-for="(user, index) in users.data" :key="index">
-                      <td>{{ user.id }}</td>
-                      <td>{{ user.name }}</td>
-                      <td>{{ user.email }}</td>
-
-                      <td v-if="user.email_verified_at">
-                        <span class="badge badge-success">فعال</span>
-                      </td>
-
-                      <td v-else>
-                        <span class="badge badge-danger">غیر فعال</span>
-                      </td>
+                    <tr
+                      v-for="(category, index) in categories.data"
+                      :key="index"
+                    >
+                      <td>{{ category.id }}</td>
+                      <td>{{ category.name }}</td>
+                      <td>{{ category.lname }}</td>
+                      <td v-if="category.parent">{{ category.parent.name }}</td>
+                      <td v-else>بدون والد</td>
 
                       <td class="d-flex">
                         <router-link
                           :to="{
-                            name: 'adminUsersEdit',
-                            params: { id: user.id },
+                            name: 'adminCategoriesEdit',
+                            params: { id: category.id },
                           }"
                           class="btn btn-sm btn-primary"
                         >
@@ -92,7 +82,7 @@
                         </router-link>
                         <a
                           class="btn btn-sm btn-danger mr-2"
-                          v-on:click.prevent="deleteUser(user.id)"
+                          v-on:click.prevent="deleteCategory(category.id)"
                           >حذف</a
                         >
                       </td>
@@ -118,20 +108,20 @@ export default {
     };
   },
   methods: {
-    deleteUser(userId) {
-      this.$store.dispatch("deleteUser", userId);
+    deleteCategory(categoryId) {
+      this.$store.dispatch("deleteCategory", categoryId);
     },
     onInput() {
-      this.$store.dispatch("searchInput", this.searchQuery);
+      this.$store.dispatch("searchInputCategory", this.searchQuery);
     },
   },
   computed: {
-    users() {
-      return this.$store.getters.getUsers;
+    categories() {
+      return this.$store.getters.getCategories;
     },
   },
   created() {
-    this.$store.dispatch("getUsersFromServer");
+    this.$store.dispatch("getCategoriesFromServer");
   },
 };
 </script>

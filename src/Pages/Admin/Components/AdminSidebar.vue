@@ -37,6 +37,23 @@
                 </li>
               </ul>
             </li>
+            <li class="nav-item has-treeview menu-open">
+              <router-link to="/admin/categories" class="nav-link" active-class="active">
+                <i class="nav-icon fa fa-dashboard"></i>
+                <p>
+                  دسته بندی ها
+                  <i class="right fa fa-angle-left"></i>
+                </p>
+              </router-link>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                <router-link to="/admin/categories" class="nav-link" active-class="active">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>لیست دسته ها</p>
+                </router-link>
+                </li>
+              </ul>
+            </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

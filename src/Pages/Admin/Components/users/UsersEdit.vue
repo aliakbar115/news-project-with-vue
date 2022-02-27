@@ -5,7 +5,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1 class="m-0 text-dark">ویرایش کاربر </h1>
+              <h1 class="m-0 text-dark">ویرایش کاربر</h1>
             </div>
             <div class="col-sm-6">
               <ul class="breadcrumb">
@@ -92,21 +92,9 @@
                     name="password"
                     class="form-control"
                     id="passwordInput"
-                    placeholder="پسورد را وارد کنید"
+                    placeholder="اگر رمز عبوری وارد نشود از رمز عبور قبلی استفاده می شود"
                     v-model="password"
-                    @blur="$v.password.$touch()"
-                    :class="{ invalid: $v.password.$error }"
                   />
-                  <p
-                    class="text-danger"
-                    v-if="!$v.password.required && $v.password.$dirty"
-                  >
-                    لطفا کلمه عبور را وارد کنید
-                  </p>
-                  <p class="text-danger" v-if="!$v.password.minLength">
-                    کلمه عبور باید حداقل شمال
-                    {{ $v.password.$params.minLength.min }} کاراکتر باشد
-                  </p>
                 </div>
 
                 <div class="form-group">
@@ -120,7 +108,7 @@
                     name="password_confirmation"
                     class="form-control"
                     id="passwordInputreapet"
-                    placeholder=" تکرار پسورد را وارد کنید "
+                    placeholder=" اگر رمز عبوری وارد نشود از رمز عبور قبلی استفاده می شود "
                     v-model="password_confirmation"
                     @input="$v.password_confirmation.$touch()"
                     :class="{ invalid: $v.password_confirmation.$error }"
@@ -178,7 +166,7 @@
                 </router-link>
               </div>
             </form>
-            <p>{{user.data.email}}</p>
+            <span>{{updateUserTest()}}</span>
           </div>
         </div>
       </div>
@@ -199,12 +187,12 @@ export default {
   data() {
     return {
       name: '',
-      email: "",
+      email: '',
       password: "",
       password_confirmation: "",
       verify: false,
       is_staff: 0,
-      userData:{}
+      id: '',
     };
   },
   methods: {
@@ -217,6 +205,7 @@ export default {
         password_confirmation: this.password_confirmation,
         verify: this.verify,
         is_staff: this.is_staff,
+        id: this.id,
       };
       this.$store.dispatch("updateUser", edit);
     },
@@ -224,9 +213,6 @@ export default {
   computed: {
     errors() {
       return this.$store.getters.getErrors;
-    },
-    user() {
-      return this.$store.getters.getUser;
     },
   },
   components: {},
@@ -239,20 +225,25 @@ export default {
       required,
       email,
     },
-    password: {
-      minLength: minLength(6),
-      required,
-    },
     password_confirmation: {
       sameAs: sameAs("password"),
     },
   },
-  created(){
+  created() {
     this.$store.dispatch("editUser", {
-      id: this.$route.params.id   // give from url
+      id: this.$route.params.id, // give from url
     });
   },
-
+  methods: {
+    updateUserTest(){
+     let users=this.$store.getters.getUser;
+     this.name=users.name;
+     this.email=users.email;
+     this.verify=users.email_verified_at;
+     this.is_staff=users.is_staff;
+     this.id=users.id
+    }
+  },
 };
 </script>
 

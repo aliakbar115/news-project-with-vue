@@ -6,7 +6,6 @@ const state = {
   users: [],
   errors: []
 };
-
 const getters = {
   getUsers(state) {
     return state.users;
@@ -18,7 +17,6 @@ const getters = {
     return state.user;
   },
 };
-
 const mutations = {
   setUsers(state, users) {
     state.users = users;
@@ -30,7 +28,6 @@ const mutations = {
     state.user = user;
   },
 };
-
 const actions = {
   getUsersFromServer(context) {
     Vue.axios.get('admin/users/all')
@@ -60,7 +57,8 @@ const actions = {
   editUser(context, filter) {
     Vue.axios.get('admin/users/edit/' + filter.id)
       .then(function (response) {
-        context.commit("setUser", response.data);
+        console.log(response.data.data);
+        context.commit("setUser", response.data.data);
       })
       .catch(function (error) {
         //console.log(error);
@@ -69,8 +67,8 @@ const actions = {
         // always executed
       });
   },
-  updateUser() {
-    Vue.axios.put('admin/users/edit', editData)
+  updateUser(context, edit) {
+    Vue.axios.post('admin/users/update', edit)
       .then(function (response) {
         router.push('/admin/users');   // ری دایرکت
       })
@@ -81,11 +79,33 @@ const actions = {
       })
       .then(function () {
       });
+  },
+  deleteUser(context, userId) {
+    Vue.axios.delete("admin/users/delete/" + userId)
+      .then(function (response) {
+        context.commit("setUsers", response.data.users);
+      })
+      .catch(function (error) {
+      })
+      .then(function () {
+      });
+  },
+  searchInput(context, search) {
+    Vue.axios.get('admin/users/search', {
+      params: {
+        search: search
+      }
+    })
+      .then(function (response) {
+        context.commit("setUsers", response.data);
+      })
+      .catch(function (error) {
+        //console.log(error);
+      })
+      .then(function () {
+        // always executed
+      });
   }
-
-
-
-
 };
 
 export default {

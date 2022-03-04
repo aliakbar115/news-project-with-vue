@@ -16,11 +16,23 @@ Vue.use(VueAxios,axios);
 Vue.use(vueSimpleAlert);
 
 axios.defaults.baseURL='http://localhost:8000/api/'
-
-// Vue.http.interceptors.push((request, next) => { // use JWT   برای لاگین
-//   request.headers.set('Authorization', 'Bearer ' + Vue.cookie.get('news_auth_token'));  // set in header Request for all
-//   next();
-// });
+axios.interceptors.request.use(function (config) {
+  config.headers.Authorization = 'Bearer ' + Vue.cookie.get('news_auth_token');
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
+axios.interceptors.response.use(function (response) {
+  return response;
+}, function (error) {
+  if (error) {
+    console.log(error.response);
+    if (error.response.status == 401) {
+      router.push('/');
+    }
+  }
+  return Promise.reject(error);
+});
 
 export const router = new VueRouter({
   routes: Routes,

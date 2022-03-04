@@ -4,7 +4,8 @@ import { router } from '../../main';
 const state = {
   user: {},
   users: [],
-  errors: []
+  errors: [],
+  isAdmin: false
 };
 const getters = {
   getUsers(state) {
@@ -16,6 +17,9 @@ const getters = {
   getUser(state) {
     return state.user;
   },
+  isAdmin(state) {
+    return state.isAdmin;
+  }
 };
 const mutations = {
   setUsers(state, users) {
@@ -26,6 +30,9 @@ const mutations = {
   },
   setUser(state, user) {
     state.user = user;
+  },
+  setIsAdmin(state, isAdminUser) {
+    state.isAdmin = isAdminUser;
   },
 };
 const actions = {
@@ -105,9 +112,23 @@ const actions = {
       .then(function () {
         // always executed
       });
+  },
+  checkAdmin(context) {
+    Vue.axios.get('admin/checkAdmin')
+      .then(function (response) {
+        if (response.data) {
+          context.commit("setIsAdmin", true);
+        } else {
+          context.commit("setIsAdmin", false);
+          router.push('/');
+        }
+      })
+      .catch(function (error) {
+      })
+      .then(function () {
+      });
   }
 };
-
 export default {
   state,
   getters,

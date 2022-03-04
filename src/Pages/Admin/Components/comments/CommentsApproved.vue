@@ -4,7 +4,7 @@
       <li class="breadcrumb-item">
         <router-link to="/admin"> خانه </router-link>
       </li>
-      <li class="breadcrumb-item active">لیست کاربران</li>
+      <li class="breadcrumb-item active">لیست نظرات تایید شده</li>
     </ol>
     <section class="content mt-5">
       <div class="container-fluid">
@@ -12,7 +12,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">کاربران</h3>
+                <h3 class="card-title">نظرات</h3>
 
                 <div class="card-tools d-flex">
                   <!-- search -->
@@ -26,7 +26,7 @@
                         name="search"
                         value=""
                         class="form-control float-right"
-                        placeholder="search in name & email"
+                        placeholder="search in comment & id"
                         v-model="searchQuery"
                         @input="onInput"
                       />
@@ -37,23 +37,6 @@
                       </div>
                     </div>
                   </form>
-
-                  <!-- ایجاد کاربر  -->
-                  <div class="input-group-sm mr-2">
-                    <router-link
-                      to="/admin/users/create"
-                      class="btn btn-sm btn-info"
-                    >
-                      ایجاد کاربر
-                    </router-link>
-
-                    <!-- <a href="" class="btn btn-sm btn-warning">
-                      کاربران مدیر
-                    </a>
-                    <a href="" class="btn btn-sm btn-secondary">
-                      همه کاربران
-                    </a> -->
-                  </div>
                 </div>
               </div>
 
@@ -61,38 +44,34 @@
                 <table class="table table-hover">
                   <tbody>
                     <tr>
-                      <th>آیدی کاربر</th>
-                      <th>نام کاربر</th>
-                      <th>ایمیل</th>
-                      <th>وضعیت ایمیل کاربر</th>
+                      <th>آیدی نظر</th>
+                      <th> متن نظر</th>
+                      <th>نام کاربر(نظر دهنده)</th>
+                      <th>عنوان مقاله مرتبط</th>
                       <th>اقدامات</th>
                     </tr>
-                    <tr v-for="(user, index) in users.data" :key="index">
-                      <td>{{ user.id }}</td>
-                      <td>{{ user.name }}</td>
-                      <td>{{ user.email }}</td>
-
-                      <td v-if="user.email_verified_at">
-                        <span class="badge badge-success">فعال</span>
-                      </td>
-
-                      <td v-else>
-                        <span class="badge badge-danger">غیر فعال</span>
-                      </td>
+                    <tr
+                      v-for="(comment, index) in comments.data"
+                      :key="index"
+                    >
+                      <td>{{ comment.id }}</td>
+                      <td>{{ comment.comment }}</td>
+                      <td>{{ comment.user.name }}</td>
+                      <td>{{ comment.commentable.title }}</td>
 
                       <td class="d-flex">
                         <router-link
                           :to="{
-                            name: 'adminUsersEdit',
-                            params: { id: user.id },
+                            name: 'adminCommentsResponse',
+                            params: { id: comment.id },
                           }"
                           class="btn btn-sm btn-primary"
                         >
-                          ویرایش
+                          پاسخ به پیام
                         </router-link>
                         <a
                           class="btn btn-sm btn-danger mr-2"
-                          v-on:click.prevent="deleteUser(user.id)"
+                          v-on:click.prevent="deleteComment(comment.id)"
                           >حذف</a
                         >
                       </td>
@@ -118,21 +97,20 @@ export default {
     };
   },
   methods: {
-    deleteUser(userId) {
-      this.$store.dispatch("deleteUser", userId);
+    deleteComment(commentId) {
+      this.$store.dispatch("deleteComment", commentId);// حذف کامنت و پاسخ های آن با هم
     },
     onInput() {
-      this.$store.dispatch("searchInput", this.searchQuery);
+      this.$store.dispatch("searchInputComment", this.searchQuery);
     },
   },
   computed: {
-    users() {
-      console.log(this.$store.getters.getUsers);
-      return this.$store.getters.getUsers;
+    comments() {
+      return this.$store.getters.getComments;
     },
   },
   created() {
-    this.$store.dispatch("getUsersFromServer");
+    this.$store.dispatch("getApprovedCommentsFromServer");
   },
 };
 </script>
